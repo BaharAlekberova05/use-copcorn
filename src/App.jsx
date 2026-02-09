@@ -78,12 +78,15 @@ const App = () => {
   }
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchMovies = async () => {
       try {
         setIsLoading(true);
         setError("");
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal },
         );
 
         if (!res.ok) {
@@ -95,9 +98,13 @@ const App = () => {
         if (data.Response === "False") throw new Error("Movie not found!");
 
         setMovies(data.Search);
+        setError("");
       } catch (err) {
         console.log(err.message);
-        setError(err.message);
+
+        if (!error.name == "AbortError") {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -110,6 +117,10 @@ const App = () => {
     }
 
     fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -319,6 +330,13 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
 
     getMovieDetails();
   }, [selectedId]);
+
+  useEffect(() => {
+    if (!title) return;
+    document.title = `Movie | ${title}`;
+
+    return () => (document.title = "useCopcorn");
+  }, [title]);
 
   return (
     <div className="details">
