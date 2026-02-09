@@ -54,7 +54,7 @@ const average = (arr) =>
 const KEY = "f84fc31d";
 
 const App = () => {
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,9 +100,8 @@ const App = () => {
         setMovies(data.Search);
         setError("");
       } catch (err) {
-        console.log(err.message);
-
         if (!error.name == "AbortError") {
+          console.log(err.message);
           setError(err.message);
         }
       } finally {
@@ -116,6 +115,7 @@ const App = () => {
       return;
     }
 
+    handleCloseMovie();
     fetchMovies();
 
     return () => {
@@ -337,6 +337,20 @@ const MovieDetails = ({ selectedId, onCloseMovie, onAddWatched, watched }) => {
 
     return () => (document.title = "useCopcorn");
   }, [title]);
+
+  useEffect(() => {
+    const callback = (e) => {
+      if (e.code === "Escape") {
+        onCloseMovie();
+      }
+    };
+
+    document.addEventListener("keydown", callback);
+
+    return () => {
+      document.removeEventListener("keydown", callback);
+    };
+  }, [onCloseMovie]);
 
   return (
     <div className="details">
