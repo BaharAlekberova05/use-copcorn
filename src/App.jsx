@@ -210,20 +210,7 @@ const NumResults = ({ movies }) => {
 };
 
 const Main = ({ children }) => {
-  return (
-    <main className="main">
-      {children}
-      {/* <Box>
-        {isLoading && <Loader />}
-        {!isLoading && !error && <MovieList movies={movies} />}
-        {error && <ErrorMessage message={error} />}
-      </Box>
-      <Box>
-        <WatchedSummary watched={watched} />
-        <WatchedMovieList watched={watched} />
-      </Box> */}
-    </main>
-  );
+  return <main className="main">{children}</main>;
 };
 
 const ErrorMessage = ({ message }) => {
